@@ -1,0 +1,85 @@
+Roman numerals
+--------------
+
+Firstly I haven't done this Kata before, so it's quite interesting. This is a flow of consciousness. I hope it is the sort of thing you are after
+
+-------------------------------------------------------------------------
+At the start:
+
+As far as I know there is only one solution for any roman numeral, so this is a mapping problem.
+It is rather like a 'baseX' problem in which you divide by the base and build up the remainders. 
+The difference is that the base differs. M being a thousand, C being a hundred
+
+My thoughts are that we start with the biggest symbols first and get the largest integer multiple of the big number. There are obviously going
+to be issues around four. An example is the IIII is not the correct coding but instead it is IV.
+
+I think I will build up a list of tuples of the symbol and the number of times this is needed. I'll then have a 'display' method on that tuple. That lets me handle the 'four' problem
+
+The approach I am considering before reading the wiki page
+1: build up some integration tests. I'll do this early as this will highlight issues like the four problem. For example is there a nine problem? 
+2: Build up my list of fragments which is 'how many times does this symbol go into the number that's left over'
+3: Do the 'display method' on the fragments
+4: build up the final string from the display of the fragments.
+
+
+Terminology
+Fragment: A pair of a symbol and the number of times that the number that symbol represents is needed to build up the number.
+Symbol: The representation such as I V D L X C M 
+Base10Symbol: A symbol that represents a power of ten: I X C M
+-------------------------------------------------------------------------
+
+ Now I've read the wiki page. OK there is a 'nine problem'. But it looks pretty simple to code up. There appear now to be two types of symbols, those that are
+ divisible by 5 and those by ten. There will only ever by one of those 'divisible by five' numbers to represent a fragment. 
+ 
+ My mental approach is now
+ 1: Integration tests as above
+ 2: Build up a list of fragments which are of Base10symbols and the count of the number of times they occur. 
+ 3: Do the 'display method' on those fragments
+ 4: Chain the results
+ 
+ I'll do that, see what the results look like against the integration tests and decide if I have missed a key abstraction
+ 
+ I've had an interesting realistion that the toString of the number represented as a string gives me interesting properties. For example the last three digits are the count of the CXI symbols respectively
+ and the number modulo 1000 is the count of the Ms. 
+ 
+ I wrote my tests. Note that I made the test class actually implement the trait. I often do this, and I do it for two reasons
+ Firstly the IDE can be used to quickly find the test
+ Secondly I can test protected methods this way, which often means I don't need to expose nearly as much. That benefit didn't occur in this simple exercise
+ 
+ 
+ ----------------------------------------------------------------------
+ 
+ I started the above , then realised that actually there was a simpler solution.
+ 
+ If I accept the fact that a symbol can be a string and not a letter, so for example IV is the symbol for four, then I can have a 'reference list' of the 
+ values for 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5,4, 1, and then then just walk this list saying 'how many time does this occur', and do
+ a recursive method  that generates the number of times each symbol occurs followed by the roman numeral representing the remainder.
+ 
+ This sounds easy! Although I had to throw away pretty much all the code so far. Ah well that's real life for you
+ 
+ At least my tests are still valid.
+ 
+ I put that list of values in the companion object, and then realised that my personal skill in roman numerals was weak, so I wrote a test that said if I took that symbol 
+ on the left side of the tuple, I produced the right. And this was worth doing... I messed up with 100... Hurrah for tests
+ 
+That was mostly that. The code worked as long as sensible numbers are passed in. What I had to do now was to deal with 'messups'. There are two types of those in this job. The 'assertions'
+ which if violated are a software exception because I cannot imagine how they would happen, and the 'contractual ones'. 
+ 
+ I wrote a couple of tests for those (not the assertions: by their nature I cannot test them easily), then implemented the code that made the  tests pass 
+ 
+ ----------------------------------------------------------------------
+ 
+ Comments
+ It was a fun test. I had a *doh* comment in the middle when I realised that I had the wrong approach. 
+ It's not a great *scala* test as I didn't get a sensible opportunity for implicits, type classes or even any real functional programming. 
+ Because of that hiccup it actually took me about forty minutes. Mind you I spent longer writing this file than the code!
+ This is the only time I have EVER used 'string*int' in any language. I laughed when I found myself needing it
+ My personal skill in roman numerals is no better: writing those tests was a nightmare
+ 
+ 
+  
+ 
+ 
+ 
+
+ 
